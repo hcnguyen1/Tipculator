@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart'; // To save images locally
 
-// Import the screens
 import 'home_screen.dart';
 import 'tip_calculator.dart';
 import 'scan_history.dart';
@@ -14,20 +15,30 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   int currentIndex = 0;
+  List<String> scanHistory = []; // Store image file paths
 
-  // Function to open camera
   Future<void> openCamera() async {
     final picker = ImagePicker();
-    // Open the camera
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
 
-    if (pickedFile == null) return;
+    if (pickedFile != null) {
+      // Get app's directory to save the image
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String fileName = "${DateTime.now().millisecondsSinceEpoch}.jpg";
+      final File savedImage = File("${appDir.path}/$fileName");
+
+      // Copy the captured image to the app directory
+      await File(pickedFile.path).copy(savedImage.path);
+
+      setState(() {
+        scanHistory.add(savedImage.path); // Save image path to history
+      });
+    }
   }
 
   @override
@@ -41,13 +52,9 @@ class _MyAppState extends State<MyApp> {
         body: IndexedStack(
           index: currentIndex,
           children: [
-            HomeScreen(
-              onCameraPressed: openCamera,
-            ), // Pass the openCamera function here
+            HomeScreen(onCameraPressed: openCamera), // Camera button
             TipCalculator(),
-            ScanHistory(
-              [],
-            ), // Pass an empty list or implement the feature if needed
+            ScanHistory(scanHistory), // Pass image history
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -55,10 +62,7 @@ class _MyAppState extends State<MyApp> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(icon: Icon(Icons.calculate), label: "Tip"),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: "History",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.history), label: "Gallery"),
           ],
           onTap: (index) {
             setState(() {
