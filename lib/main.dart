@@ -27,16 +27,31 @@ class _MyAppState extends State<MyApp> {
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      // Get app's directory to save the image
-      final Directory appDir = await getApplicationDocumentsDirectory();
-      final String fileName = "${DateTime.now().millisecondsSinceEpoch}.jpg";
-      final File savedImage = File("${appDir.path}/$fileName");
 
-      // Copy the captured image to the app directory
-      await File(pickedFile.path).copy(savedImage.path);
+      // Save image to local app directory
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = pickedFile.path.split("/").last;
+      final localFile = await File(pickedFile.path).copy("${appDir.path}/$fileName");
 
       setState(() {
-        scanHistory.add(savedImage.path); // Save image path to history
+        scanHistory.add(localFile.path);
+      });
+    }
+  }
+
+  Future<void> openGallery() async {
+    final picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+
+      // Save image to local app directory
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = pickedFile.path.split("/").last;
+      final localFile = await File(pickedFile.path).copy("${appDir.path}/$fileName");
+
+      setState(() {
+        scanHistory.add(localFile.path);
       });
     }
   }
@@ -52,7 +67,7 @@ class _MyAppState extends State<MyApp> {
         body: IndexedStack(
           index: currentIndex,
           children: [
-            HomeScreen(onCameraPressed: openCamera), // Camera button
+            HomeScreen(onCameraPressed: openCamera, onGalleryPressed: openGallery), // Camera button
             TipCalculator(),
             ScanHistory(scanHistory), // Pass image history
           ],

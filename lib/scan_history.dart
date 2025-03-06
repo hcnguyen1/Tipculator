@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
+// Display the scan history
 class ScanHistory extends StatelessWidget {
   final List<String> scanHistory;
   const ScanHistory(this.scanHistory, {super.key});
@@ -48,6 +49,7 @@ class ScanHistory extends StatelessWidget {
   }
 }
 
+// Open the image in full screen
 class FullScreenImage extends StatelessWidget {
   final String imagePath;
   const FullScreenImage(this.imagePath, {super.key});
