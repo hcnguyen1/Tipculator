@@ -1,14 +1,17 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
   final VoidCallback onCameraPressed;
   final VoidCallback onGalleryPressed;
+  final String? cameraImagePath;
 
   const HomeScreen({
     required this.onCameraPressed,
     required this.onGalleryPressed,
-    Key? key,
-  }) : super(key: key);
+    this.cameraImagePath,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,15 @@ class HomeScreen extends StatelessWidget {
             onPressed: onGalleryPressed,
             child: const Icon(Icons.photo_library),
           ),
+          // Show the image if available
+          if(cameraImagePath != null) ...[
+            const SizedBox(height: 16),
+            Image.file(
+              File(cameraImagePath!),
+              width: 200,
+              height: 200,
+            ),
+          ],
         ],
       ),
     );

@@ -7,13 +7,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 class SignIn extends StatefulWidget {
   final VoidCallback onSignInSuccess;
 
-  const SignIn({required this.onSignInSuccess, Key? key}) : super(key: key);
+  const SignIn({required this.onSignInSuccess, super.key});
 
   @override
-  _SignInState createState() => _SignInState();
+  SignInState createState() => SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class SignInState extends State<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;

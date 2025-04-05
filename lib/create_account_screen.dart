@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CreateAccountScreen extends StatefulWidget {
+  const CreateAccountScreen({super.key});
+
   @override
-  _CreateAccountScreenState createState() => _CreateAccountScreenState();
+  CreateAccountScreenState createState() => CreateAccountScreenState();
 }
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> {
+class CreateAccountScreenState extends State<CreateAccountScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,6 +20,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+      if(!mounted) return; // Check if the widget is still mounted
       Navigator.pop(context); // Go back to the previous screen
     } catch (e) {
       setState(() {
