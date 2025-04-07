@@ -5,12 +5,12 @@ import 'package:path_provider/path_provider.dart'; // To save images locally
 import 'package:firebase_core/firebase_core.dart'; // Ensure Firebase is initialized
 import 'firebase_options.dart'; // Firebase options for initialization
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 import 'signin.dart';
 import 'home_screen.dart';
-import 'tip_calculator.dart';
+import 'summary.dart';
 import 'scan_history.dart';
+import 'scan_screen.dart';
 
 void main() async {
   // Ensure Firebase is initialized before running the app
@@ -30,8 +30,9 @@ class MyAppState extends State<MyApp> {
   int currentIndex = 0;
   List<String> scanHistory = []; // Store image file paths
   String? cameraImagePath; // Store camera image path
+  List<String> scannedElements = []; // Store scanned elements
 
-  Future<void> openCamera() async {
+  Future<void> openCamera(BuildContext context) async {
     // Simulate a "camera capture" using a static image for testing
     final appDir = await getApplicationDocumentsDirectory();
     final byteData = await rootBundle.load('assets/images/tip.jpg');
@@ -42,6 +43,29 @@ class MyAppState extends State<MyApp> {
       cameraImagePath = file.path;
       scanHistory.add(file.path);
     });
+
+    // Navigate to the scan screen with the captured image
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => ScanScreen(
+    //       imagePath: cameraImagePath!,
+    //       onScanned: (elements) {
+    //         setState(() {
+    //           scannedElements = elements;
+    //         });
+    //       },
+    //     ),
+    //   ),
+    // );
+    // Navigate to the scan screen with the captured image
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ScanScreen(imagePath: file.path),
+        ),
+      );
+    }
   }
 
   Future<void> openGallery() async {
@@ -99,10 +123,10 @@ class MyAppState extends State<MyApp> {
                 index: currentIndex,
                 children: [
                   HomeScreen(
-                    onCameraPressed: openCamera,
+                    onCameraPressed: (context) => openCamera(context),
                     onGalleryPressed: openGallery,
                   ), // Camera button
-                  TipCalculator(),
+                  TipSummary(),
                   ScanHistory(scanHistory), // Pass image history
                 ],
               ),
@@ -115,11 +139,11 @@ class MyAppState extends State<MyApp> {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.calculate),
-                    label: "Tip",
+                    label: "Summary",
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.history),
-                    label: "Gallery",
+                    label: "History",
                   ),
                 ],
                 onTap: (index) {

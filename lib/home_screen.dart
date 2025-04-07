@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  final VoidCallback onCameraPressed;
+  final void Function(BuildContext) onCameraPressed;
   final VoidCallback onGalleryPressed;
   final String? cameraImagePath;
 
-  const HomeScreen({
+  HomeScreen({
     required this.onCameraPressed,
     required this.onGalleryPressed,
     this.cameraImagePath,
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           const Text("Open Camera"),
           const SizedBox(height: 8),
           FloatingActionButton(
-            onPressed: onCameraPressed,
+            onPressed: () => onCameraPressed(context),
             child: const Icon(Icons.camera_alt),
           ),
           const SizedBox(height: 16),
