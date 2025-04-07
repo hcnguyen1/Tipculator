@@ -84,11 +84,7 @@ class _ScanScreenState extends State<ScanScreen> {
                               height: rect.height * scaleY,
                               child: GestureDetector(
                                 onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Tapped: ${element.text}"),
-                                    ),
-                                  );
+                                  Navigator.pop(context, element.text);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

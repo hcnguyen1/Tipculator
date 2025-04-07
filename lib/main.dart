@@ -31,6 +31,7 @@ class MyAppState extends State<MyApp> {
   List<String> scanHistory = []; // Store image file paths
   String? cameraImagePath; // Store camera image path
   List<String> scannedElements = []; // Store scanned elements
+  String? selectedAmount; // Store selected amount from scan
 
   Future<void> openCamera(BuildContext context) async {
     // Simulate a "camera capture" using a static image for testing
@@ -45,26 +46,21 @@ class MyAppState extends State<MyApp> {
     });
 
     // Navigate to the scan screen with the captured image
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ScanScreen(
-    //       imagePath: cameraImagePath!,
-    //       onScanned: (elements) {
-    //         setState(() {
-    //           scannedElements = elements;
-    //         });
-    //       },
-    //     ),
-    //   ),
-    // );
-    // Navigate to the scan screen with the captured image
     if (mounted) {
-      Navigator.of(context).push(
+      final scannedAmount = await Navigator.of(context).push<String>(
         MaterialPageRoute(
           builder: (context) => ScanScreen(imagePath: file.path),
         ),
       );
+
+      print('Returned from ScanScreen with amount: $scannedAmount');
+
+      if (scannedAmount != null) {
+        setState(() {
+          selectedAmount = scannedAmount;
+          currentIndex = 1;
+        });
+      }
     }
   }
 
@@ -119,17 +115,27 @@ class MyAppState extends State<MyApp> {
                   ),
                 ],
               ),
-              body: IndexedStack(
-                index: currentIndex,
-                children: [
-                  HomeScreen(
-                    onCameraPressed: (context) => openCamera(context),
-                    onGalleryPressed: openGallery,
-                  ), // Camera button
-                  TipSummary(),
-                  ScanHistory(scanHistory), // Pass image history
-                ],
+              body: Builder(
+                builder: (context) {
+                  switch (currentIndex) {
+                    case 0:
+                      return HomeScreen(
+                        onCameraPressed: (context) => openCamera(context),
+                        onGalleryPressed: openGallery,
+                      );
+                    case 1:
+                      return TipSummary(
+                        key: UniqueKey(),
+                        amount: selectedAmount,
+                      );
+                    case 2:
+                      return ScanHistory(scanHistory);
+                    default:
+                      return const Center(child: Text('Unknown tab'));
+                  }
+                },
               ),
+
               bottomNavigationBar: BottomNavigationBar(
                 currentIndex: currentIndex,
                 items: const [
