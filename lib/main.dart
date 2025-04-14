@@ -64,7 +64,7 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> openGallery() async {
+  Future<void> openGallery(BuildContext context) async {
     final picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
@@ -81,6 +81,24 @@ class MyAppState extends State<MyApp> {
       setState(() {
         scanHistory.add(localFile.path);
       });
+    }
+
+    // Scan Screen once picture is selected
+    if (pickedFile != null) {
+      final scannedAmount = await Navigator.of(context).push<String>(
+        MaterialPageRoute(
+          builder: (context) => ScanScreen(imagePath: pickedFile.path),
+        ),
+      );
+
+      print('Returned from ScanScreen with amount: $scannedAmount');
+
+      if (scannedAmount != null) {
+        setState(() {
+          selectedAmount = scannedAmount;
+          currentIndex = 1;
+        });
+      }
     }
   }
 
@@ -102,6 +120,16 @@ class MyAppState extends State<MyApp> {
             (context) => Scaffold(
               appBar: AppBar(
                 title: const Text("Tip Calculator"),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(
+                    1.0,
+                  ), // Height of the divider
+                  child: Divider(
+                    color: Colors.grey, // Divider color
+                    thickness: 1.0, // Divider thickness
+                    height: 1.0, // Divider height
+                  ),
+                ),
                 actions: [
                   TextButton.icon(
                     icon: const Icon(Icons.logout, color: Colors.black),
@@ -121,7 +149,7 @@ class MyAppState extends State<MyApp> {
                     case 0:
                       return HomeScreen(
                         onCameraPressed: (context) => openCamera(context),
-                        onGalleryPressed: openGallery,
+                        onGalleryPressed: (context) => openGallery(context),
                       );
                     case 1:
                       return TipSummary(
@@ -129,7 +157,15 @@ class MyAppState extends State<MyApp> {
                         amount: selectedAmount,
                       );
                     case 2:
-                      return ScanHistory(scanHistory);
+                      return ScanHistory(
+                        scanHistory,
+                        onScanned: (scannedAmount) {
+                          setState(() {
+                            selectedAmount = scannedAmount;
+                            currentIndex = 1; // jump to summary
+                          });
+                        },
+                      );
                     default:
                       return const Center(child: Text('Unknown tab'));
                   }

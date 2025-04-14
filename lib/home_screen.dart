@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
   final void Function(BuildContext) onCameraPressed;
-  final VoidCallback onGalleryPressed;
+  final void Function (BuildContext) onGalleryPressed;
   final String? cameraImagePath;
 
   const HomeScreen({
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           const Text("Open Gallery"),
           const SizedBox(height: 8),
           FloatingActionButton(
-            onPressed: onGalleryPressed,
+            onPressed: () => onGalleryPressed(context),
             child: const Icon(Icons.photo_library),
           ),
           // Show the image if available
