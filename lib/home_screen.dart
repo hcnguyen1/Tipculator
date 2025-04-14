@@ -6,7 +6,7 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback onGalleryPressed;
   final String? cameraImagePath;
 
-  HomeScreen({
+  const HomeScreen({
     required this.onCameraPressed,
     required this.onGalleryPressed,
     this.cameraImagePath,

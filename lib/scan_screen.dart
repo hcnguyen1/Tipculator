@@ -5,7 +5,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 class ScanScreen extends StatefulWidget {
   final String imagePath;
 
-  const ScanScreen({Key? key, required this.imagePath}) : super(key: key);
+  const ScanScreen({super.key, required this.imagePath});
 
   @override
   State<ScanScreen> createState() => _ScanScreenState();
