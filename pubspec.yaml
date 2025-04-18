@@ -41,6 +41,8 @@ dependencies:
   firebase_auth: ^5.5.1
   google_sign_in: ^6.3.0
   google_mlkit_text_recognition: ^0.15.0
+  flutter_launcher_icons: ^0.14.3
+  rename: ^3.0.2
   #gallery_saver: ^2.3.2
   #photo_manager: ^3.6.4
 
@@ -57,6 +59,14 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  
 
 # The following section is specific to Flutter packages.
 flutter:
