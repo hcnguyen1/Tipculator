@@ -80,6 +80,15 @@ class SignInState extends State<SignIn> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // App Name
+            const Text(
+              "Tipculator",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20), // add some space
             // Email Field
             TextField(
               controller: _emailController,

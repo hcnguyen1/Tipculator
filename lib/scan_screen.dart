@@ -88,14 +88,20 @@ class _ScanScreenState extends State<ScanScreen> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.yellow),
-                                    color: Colors.yellow.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ), // Light gray border
+                                    color: Colors.grey.shade200.withAlpha(
+                                      153,
+                                    ), // Light background
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
                                     element.text,
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ),

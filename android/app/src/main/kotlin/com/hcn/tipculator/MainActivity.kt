@@ -1,4 +1,4 @@
-package com.example.first_app
+package com.hcn.tipculator
 
 import io.flutter.embedding.android.FlutterActivity
 

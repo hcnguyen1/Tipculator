@@ -45,8 +45,10 @@ class FullScreenImageState extends State<FullScreenImage> {
                   ),
                 );
 
-                if (scannedAmount != null) {
-                  Navigator.pop(context, scannedAmount);
+                if (mounted) {
+                  if (scannedAmount != null) {
+                    Navigator.pop(context, scannedAmount);
+                  }
                 }
               },
             ),

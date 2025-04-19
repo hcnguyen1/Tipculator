@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart'; // To save images locally
 import 'package:firebase_core/firebase_core.dart'; // Ensure Firebase is initialized
 import 'firebase_options.dart'; // Firebase options for initialization
-import 'package:flutter/services.dart' show rootBundle;
 
 import 'signin.dart';
 import 'home_screen.dart';
@@ -34,26 +33,34 @@ class MyAppState extends State<MyApp> {
   String? selectedAmount; // Store selected amount from scan
 
   Future<void> openCamera(BuildContext context) async {
-    // Simulate a "camera capture" using a static image for testing
+    final picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    if (pickedFile == null) return;
+
+    // Save image to local app directory
     final appDir = await getApplicationDocumentsDirectory();
-    final byteData = await rootBundle.load('assets/images/tip.jpg');
-    final file = File('${appDir.path}/tip.jpg');
-    await file.writeAsBytes(byteData.buffer.asUint8List());
+    final fileName = pickedFile.path.split("/").last;
+    final localFile = await File(
+      pickedFile.path,
+    ).copy("${appDir.path}/$fileName");
+
+    if (!mounted) return;
 
     setState(() {
-      cameraImagePath = file.path;
-      scanHistory.add(file.path);
+      cameraImagePath = localFile.path;
+      scanHistory.add(localFile.path);
     });
 
-    // Navigate to the scan screen with the captured image
     if (mounted) {
-      final scannedAmount = await Navigator.of(context).push<String>(
+      final scannedAmount = await Navigator.push<String>(
+        context,
         MaterialPageRoute(
-          builder: (context) => ScanScreen(imagePath: file.path),
+          builder: (_) => ScanScreen(imagePath: localFile.path),
         ),
       );
-
-      print('Returned from ScanScreen with amount: $scannedAmount');
 
       if (scannedAmount != null) {
         setState(() {
@@ -85,14 +92,13 @@ class MyAppState extends State<MyApp> {
 
     // Scan Screen once picture is selected
     if (pickedFile != null) {
+      if (!mounted) return;
       final scannedAmount = await Navigator.of(context).push<String>(
         MaterialPageRoute(
           builder: (context) => ScanScreen(imagePath: pickedFile.path),
         ),
       );
-
-      print('Returned from ScanScreen with amount: $scannedAmount');
-
+      if (!mounted) return;
       if (scannedAmount != null) {
         setState(() {
           selectedAmount = scannedAmount;
@@ -107,7 +113,20 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Tip Calculator",
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF1E1E1E), // true dark
+        primaryColor: const Color(0xFF00BCD4), // example primary color (cyan)
+        textTheme: ThemeData.dark().textTheme.apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        ),
+        sliderTheme: SliderThemeData(
+          activeTrackColor: Colors.cyan,
+          thumbColor: Colors.cyanAccent,
+          overlayColor: Colors.cyan.withAlpha(32),
+        ),
+        cardColor: Colors.grey[900],
+      ),
       initialRoute: '/signin',
       routes: {
         '/signin':
@@ -119,7 +138,11 @@ class MyAppState extends State<MyApp> {
         '/home':
             (context) => Scaffold(
               appBar: AppBar(
-                title: const Text("Tip Calculator"),
+                title: const Text("Tipculator"),
+                titleTextStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                ),
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(
                     1.0,
@@ -132,11 +155,8 @@ class MyAppState extends State<MyApp> {
                 ),
                 actions: [
                   TextButton.icon(
-                    icon: const Icon(Icons.logout, color: Colors.black),
-                    label: const Text(
-                      "Logout",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Logout"),
                     onPressed: () {
                       Navigator.pushReplacementNamed(context, '/signin');
                     },
