@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'create_account_screen.dart';
-import 'forgot_password_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class SignIn extends StatefulWidget {
@@ -14,61 +12,32 @@ class SignIn extends StatefulWidget {
 }
 
 class SignInState extends State<SignIn> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String _errorMessage = '';
-
-  Future<void> _signIn() async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      widget.onSignInSuccess();
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-      });
-    }
-  }
+  String errorMessage = '';
 
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        // The user canceled the sign-in
-        return;
-      }
+      if (googleUser == null) return;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       await _auth.signInWithCredential(credential);
-      widget.onSignInSuccess();
+
+      if (mounted) {
+        setState(() {});
+        widget.onSignInSuccess();
+      }
     } catch (e) {
       setState(() {
-        _errorMessage = e.toString();
+        errorMessage = e.toString();
       });
     }
-  }
-  
-  void _createAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CreateAccountScreen()),
-    );
-  }
-
-  void _forgotPassword() {
-    // Navigate to the forgot password screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
-    );
   }
 
   @override
@@ -83,58 +52,10 @@ class SignInState extends State<SignIn> {
             // App Name
             const Text(
               "Tipculator",
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20), // add some space
-            // Email Field
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Password Field
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            // Sign In Button
-            ElevatedButton(
-              onPressed: _signIn,
-              child: const Text("Sign In"),
-            ),
-            if (_errorMessage.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  _errorMessage,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            const SizedBox(height: 16),
-            // Create Account Button
-            ElevatedButton(
-              onPressed: _createAccount,
-              child: const Text("Create Account"),
-            ),
-            const SizedBox(height: 16),
-            // Forgot Password Button
-            TextButton(
-              onPressed: _forgotPassword,
-              child: const Text("Forgot Password?"),
-            ),
+            const SizedBox(height: 20),
             // Sign in with Google Button
-            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _signInWithGoogle,
               style: ElevatedButton.styleFrom(
@@ -152,9 +73,7 @@ class SignInState extends State<SignIn> {
                   const SizedBox(width: 8),
                   const Text(
                     'Sign in with Google',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),

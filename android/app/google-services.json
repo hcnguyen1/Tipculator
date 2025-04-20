@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "494559039071-kvl23uh5ptrh0r97piu9ekas73segetq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hcn.tipculator",
+            "certificate_hash": "6dab52fcb2859a689db5b7acd9e86b853a2f3e2e"
+          }
+        },
+        {
           "client_id": "494559039071-ps4fcmarprktc79ujf1jsq7mtcp74h29.apps.googleusercontent.com",
           "client_type": 3
         }
