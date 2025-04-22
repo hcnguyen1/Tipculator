@@ -45,22 +45,34 @@ class SignInState extends State<SignIn> {
     return Scaffold(
       appBar: AppBar(title: const Text("Sign In")),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // App Name
-            const Text(
-              "Tipculator",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            const SizedBox(height: 40),
+            // Centered logo and app name
+            Column(
+              children: [
+                Image.asset('assets/images/logo.png', height: 100, width: 100),
+                const SizedBox(height: 16),
+                const Text(
+                  "Tipculator",
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            // Sign in with Google Button
+            const Spacer(),
+            // Google sign-in button
             ElevatedButton(
               onPressed: _signInWithGoogle,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
+                side: const BorderSide(color: Colors.grey),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -70,14 +82,23 @@ class SignInState extends State<SignIn> {
                     height: 24.0,
                     width: 24.0,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   const Text(
                     'Sign in with Google',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+            // Optional error message
+            if (errorMessage.isNotEmpty)
+              Text(
+                errorMessage,
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

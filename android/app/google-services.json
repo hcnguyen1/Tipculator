@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "494559039071-0t8vpom8hmfqftsacfrdij2seu7rd5da.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.first_app",
+            "certificate_hash": "ebc250d560498261cf63e259f8221b3508a2b2bd"
+          }
+        },
+        {
           "client_id": "494559039071-k9akb4vl4lf4k8btli7nh9aa5702mks4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -57,6 +65,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "494559039071-jjjt573eg9oa25sjcek74sku2afbucfg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hcn.tipculator",
+            "certificate_hash": "ebc250d560498261cf63e259f8221b3508a2b2bd"
+          }
+        },
         {
           "client_id": "494559039071-kvl23uh5ptrh0r97piu9ekas73segetq.apps.googleusercontent.com",
           "client_type": 1,
